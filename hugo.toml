@@ -1,0 +1,51 @@
+baseURL = "https://chusheng.uk/"
+title = "初牲的创作站"
+defaultContentLanguage = "zh-cn"
+enableGitInfo = false
+
+# 摘要长度（首页卡片用）
+summaryLength = 40
+
+[languages.zh-cn]
+  label = "简体中文"
+  locale = "zh_CN"
+
+[params]
+  author = "初牲"
+  description = "个人同人创作：文字与插画"
+
+# ---- 圈子大卡片配置 ----
+# 首页每个 [[params.fandoms]] = 一张大卡片，对应一个 fandom（圈子）taxonomy。
+# name  ：必须和文章 front matter 里 fandom 字段的值完全一致，卡片链到 /fandom/<name>/。
+# image ：把图放进 static/img/（文件名一律小写），这里填 "/img/文件名.png|jpg|svg"。
+# intro ：圈子简介。
+[[params.fandoms]]
+  name = "七小侠"
+  image = "/img/circle-qixiaoxia.png"
+  intro = "XXX"
+
+[[params.fandoms]]
+  name = "圈子二"
+  image = "/img/circle-two.svg"
+  intro = "XXX"
+
+# ---- 分类 taxonomy ----
+[taxonomies]
+  fandom = "fandom"   # 圈子（驱动首页大卡片）
+  tag = "tags"        # 自由标签（甜文 / AU / BE / HE / R18 …）
+
+[markup.goldmark.renderer]
+  unsafe = true  # 允许正文里写 HTML（图说、评论容器等）
+
+[[menu.main]]
+  name = "首页"
+  url = "/"
+  weight = 1
+[[menu.main]]
+  name = "同人文"
+  url = "/fiction/"
+  weight = 2
+[[menu.main]]
+  name = "同人图"
+  url = "/art/"
+  weight = 3

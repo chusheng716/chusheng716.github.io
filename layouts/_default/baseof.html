@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language.Lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} · {{ .Site.Title }}{{ end }}</title>
+  <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+  <link rel="stylesheet" href="{{ "css/main.css" | relURL }}">
+</head>
+<body>
+  <!-- 两侧竖向色带，窄屏自动隐藏 -->
+  <div class="band band-left" aria-hidden="true"></div>
+  <div class="band band-right" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="site-title" href="{{ "/" | relURL }}">{{ .Site.Title }}</a>
+    <nav class="site-nav">
+      {{ $cur := .RelPermalink }}
+      {{ range .Site.Menus.main }}
+        {{ $active := or (eq $cur .URL) (and (ne .URL "/") (hasPrefix $cur .URL)) }}
+        <a href="{{ .URL | relURL }}"{{ if $active }} class="is-current"{{ end }}>{{ .Name }}</a>
+      {{ end }}
+    </nav>
+  </header>
+
+  <main class="content">
+    {{ block "main" . }}{{ end }}
+  </main>
+
+  <footer class="site-footer">
+    <p>© {{ now.Year }} {{ .Site.Params.author }} · 同人创作，仅供交流</p>
+  </footer>
+</body>
+</html>

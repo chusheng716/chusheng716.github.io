@@ -1,0 +1,12 @@
+{{ define "main" }}
+  <h1 class="page-title">
+    {{ if ne .Data.Plural "fandom" }}#{{ end }}{{ .Title }}
+  </h1>
+  {{ with .Content }}<div class="section-intro">{{ . }}</div>{{ end }}
+
+  <div class="card-grid">
+    {{ range .Pages.ByDate.Reverse }}
+      {{ partial "card.html" . }}
+    {{ end }}
+  </div>
+{{ end }}

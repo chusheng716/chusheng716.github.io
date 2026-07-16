@@ -1,0 +1,70 @@
+{{ define "main" }}
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">{{ .Title }}</h1>
+      <time class="post-date">{{ .Date.Format "2006-01-02" }}</time>
+      {{ with .GetTerms "fandom" }}
+        <div class="post-meta">{{ range . }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ end }}</div>
+      {{ end }}
+      {{ with .GetTerms "tags" }}
+        <div class="post-meta">{{ range . }}<a class="post-tag" href="{{ .RelPermalink }}">#{{ .LinkTitle }}</a>{{ end }}</div>
+      {{ end }}
+    </header>
+
+    {{ if eq .Section "art" }}
+      {{ with .Params.image }}
+        <figure class="post-art">
+          <img src="{{ . | relURL }}" alt="{{ $.Title }}">
+          {{ with $.Params.caption }}<figcaption>{{ . }}</figcaption>{{ end }}
+        </figure>
+      {{ end }}
+    {{ end }}
+
+    <div class="post-body">
+      {{ .Content }}
+    </div>
+
+    {{/* 上/下一章：同一 fandom 内按 weight 升序（取本篇第一个 fandom 作为序列）。
+         ponytail: 多圈子时只认第一个 fandom；没有 fandom 时退回 section 内顺序。 */}}
+    {{ $prev := "" }}
+    {{ $next := "" }}
+    {{ $fams := .Params.fandom }}
+    {{ if $fams }}
+      {{ with site.GetPage (printf "/fandom/%s" (index $fams 0)) }}
+        {{ $sibs := .Pages.ByWeight }}
+        {{ range $i, $p := $sibs }}
+          {{ if eq $p.RelPermalink $.RelPermalink }}
+            {{ if gt $i 0 }}{{ $prev = index $sibs (sub $i 1) }}{{ end }}
+            {{ if lt (add $i 1) (len $sibs) }}{{ $next = index $sibs (add $i 1) }}{{ end }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ else }}
+      {{ $prev = .PrevInSection }}
+      {{ $next = .NextInSection }}
+    {{ end }}
+    <nav class="post-nav" data-prev="{{ with $prev }}{{ .RelPermalink }}{{ end }}" data-next="{{ with $next }}{{ .RelPermalink }}{{ end }}">
+      <span class="post-nav-prev">
+        {{ with $prev }}<a href="{{ .RelPermalink }}">← 上一章：{{ .Title }}</a>{{ end }}
+      </span>
+      <span class="post-nav-next">
+        {{ with $next }}<a href="{{ .RelPermalink }}">下一章：{{ .Title }} →</a>{{ end }}
+      </span>
+    </nav>
+
+    <!-- 评论区容器，评论系统之后再接 -->
+    <div id="waline"></div>
+  </article>
+
+  <script>
+    (function () {
+      var nav = document.querySelector('.post-nav');
+      if (!nav) return;
+      document.addEventListener('keydown', function (e) {
+        if (e.target.matches('input, textarea')) return;
+        if (e.key === 'ArrowLeft' && nav.dataset.prev) location.href = nav.dataset.prev;
+        if (e.key === 'ArrowRight' && nav.dataset.next) location.href = nav.dataset.next;
+      });
+    })();
+  </script>
+{{ end }}

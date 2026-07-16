@@ -1,0 +1,19 @@
+{{/*
+  嵌入视频，响应式 16:9。不托管本地视频。
+  YouTube:  {{< video youtube="视频ID" >}}
+  Bilibili: {{< video bilibili="BV号" >}}
+*/}}
+{{ $yt := .Get "youtube" }}
+{{ $bili := .Get "bilibili" }}
+<div class="video-embed">
+  {{ if $yt }}
+    <iframe src="https://www.youtube.com/embed/{{ $yt }}" title="YouTube video"
+      loading="lazy" allowfullscreen
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+  {{ else if $bili }}
+    <iframe src="https://player.bilibili.com/player.html?bvid={{ $bili }}&autoplay=0"
+      title="Bilibili video" loading="lazy" allowfullscreen scrolling="no" border="0"></iframe>
+  {{ else }}
+    {{ errorf "video shortcode 需要 youtube 或 bilibili 参数（%s）" .Position }}
+  {{ end }}
+</div>
