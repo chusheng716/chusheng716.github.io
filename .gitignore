@@ -1,0 +1,10 @@
+# Hugo 构建产物
+/public/
+/resources/_gen/
+.hugo_build.lock
+
+# 原始素材（docx 等），不发布
+/drafts/
+
+# 系统文件
+.DS_Store
