@@ -1,7 +1,7 @@
 ---
-title: "fandom二"
+title: fandom 2
 weight: 2
-cover: "cover.svg"
+cover: cover.svg
 ---
 
 XXX
