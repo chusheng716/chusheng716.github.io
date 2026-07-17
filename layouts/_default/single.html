@@ -2,7 +2,10 @@
   <article class="post">
     <header class="post-header">
       <h1 class="post-title">{{ .Title }}</h1>
-      <time class="post-date">{{ .Date.Format "2006-01-02" }}</time>
+      <div class="post-subhead">
+        <time class="post-date">{{ .Date.Format "2006-01-02" }}</time>
+        <span class="post-views">阅读 <span class="waline-pageview-count" data-path="{{ .RelPermalink }}">·</span></span>
+      </div>
       {{ with .GetTerms "fandom" }}
         <div class="post-meta">{{ range . }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ end }}</div>
       {{ end }}
@@ -12,11 +15,21 @@
     </header>
 
     {{ if eq .Section "art" }}
-      {{ with .Params.image }}
-        <figure class="post-art">
-          <img src="{{ . | relURL }}" alt="{{ $.Title }}">
-          {{ with $.Params.caption }}<figcaption>{{ . }}</figcaption>{{ end }}
-        </figure>
+      {{/* 组图：有 images 列表就按列表顺序 + 每张的说明；否则展示目录里所有图片 */}}
+      {{ if .Params.images }}
+        {{ range .Params.images }}
+          {{ $cap := .caption }}
+          {{ with $.Resources.GetMatch .src }}
+            <figure class="post-art">
+              <img src="{{ .RelPermalink }}" alt="{{ $.Title }}">
+              {{ with $cap }}<figcaption>{{ . }}</figcaption>{{ end }}
+            </figure>
+          {{ end }}
+        {{ end }}
+      {{ else }}
+        {{ range .Resources.ByType "image" }}
+          <figure class="post-art"><img src="{{ .RelPermalink }}" alt="{{ $.Title }}"></figure>
+        {{ end }}
       {{ end }}
     {{ end }}
 
@@ -52,9 +65,35 @@
       </span>
     </nav>
 
-    <!-- 评论区容器，评论系统之后再接 -->
+    <!-- Waline 评论区（含浏览量 + 点赞 reaction） -->
     <div id="waline"></div>
   </article>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@waline/client@v3/dist/waline.css">
+  <script type="module">
+    import { init } from 'https://cdn.jsdelivr.net/npm/@waline/client@v3/dist/waline.js';
+    init({
+      el: '#waline',
+      serverURL: '{{ .Site.Params.walineServerURL }}',
+      path: '{{ .RelPermalink }}',
+      pageview: true,   // 本页浏览量 +1，并填充上方「阅读」数字
+      // 自定义 reaction：只保留 4 个正面反馈，用系统 emoji（包成 SVG data URI，
+      // 因为 Waline 只吃图片 URL 不吃 emoji 字符）。顺序：❤️ 👍 😊 😘
+      reaction: [
+        'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHRleHQgeD0iMzIiIHk9IjUxIiBmb250LXNpemU9IjUyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7inaTvuI88L3RleHQ+PC9zdmc+',
+        'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHRleHQgeD0iMzIiIHk9IjUxIiBmb250LXNpemU9IjUyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5GNPC90ZXh0Pjwvc3ZnPg==',
+        'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHRleHQgeD0iMzIiIHk9IjUxIiBmb250LXNpemU9IjUyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5iKPC90ZXh0Pjwvc3ZnPg==',
+        'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHRleHQgeD0iMzIiIHk9IjUxIiBmb250LXNpemU9IjUyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5iYPC90ZXh0Pjwvc3ZnPg==',
+      ],
+      meta: ['nick'],           // 评论表单只要昵称
+      requiredMeta: ['nick'],
+      dark: 'auto',
+      locale: {
+        placeholder: '留个言吧~',
+        reactionTitle: '如果喜欢的话请给作者点亮小心心吧～',
+      },
+    });
+  </script>
 
   <script>
     (function () {

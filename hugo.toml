@@ -13,6 +13,7 @@ summaryLength = 40
 [params]
   author = "初牲"
   description = "个人同人创作：文字与插画"
+  walineServerURL = "https://waline-lime-nine.vercel.app"  # Waline 评论/浏览量后端；换后端只改这里
 
 # ---- 圈子大卡片配置 ----
 # 首页每个 [[params.fandoms]] = 一张大卡片，对应一个 fandom（圈子）taxonomy。
@@ -42,10 +43,10 @@ summaryLength = 40
   url = "/"
   weight = 1
 [[menu.main]]
-  name = "同人文"
+  name = "写文"
   url = "/fiction/"
   weight = 2
 [[menu.main]]
-  name = "同人图"
+  name = "画图"
   url = "/art/"
   weight = 3

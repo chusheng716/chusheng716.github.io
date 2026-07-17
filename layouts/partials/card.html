@@ -1,8 +1,12 @@
 {{/* 小卡片：图有缩略图，文有摘要；都显示所属圈子 + tags（纯文本，整卡片是一个链接） */}}
 <a class="card" href="{{ .RelPermalink }}" data-section="{{ .Section }}">
   {{ if eq .Section "art" }}
-    {{ with .Params.thumb }}
-      <div class="card-thumb"><img src="{{ . | relURL }}" alt="{{ $.Title }}" loading="lazy"></div>
+    {{/* 卡片缩略图：cover 指定的图，没指定就用第一张 */}}
+    {{ $cover := "" }}
+    {{ with .Params.cover }}{{ $cover = $.Resources.GetMatch . }}{{ end }}
+    {{ if not $cover }}{{ with .Resources.ByType "image" }}{{ $cover = index . 0 }}{{ end }}{{ end }}
+    {{ with $cover }}
+      <div class="card-thumb"><img src="{{ .RelPermalink }}" alt="{{ $.Title }}" loading="lazy"></div>
     {{ end }}
   {{ end }}
   <div class="card-body">
@@ -17,6 +21,7 @@
       <span class="card-tag">{{ if eq .Section "fiction" }}文{{ else }}图{{ end }}</span>
       {{ range .Params.fandom }}<span class="card-fandom">{{ . }}</span>{{ end }}
       {{ range .Params.tags }}<span class="card-tagchip">#{{ . }}</span>{{ end }}
+      <span class="card-views">👁 <span class="waline-pageview-count" data-path="{{ .RelPermalink }}">·</span></span>
     </div>
   </div>
 </a>

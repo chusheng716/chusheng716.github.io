@@ -1,0 +1,9 @@
+{{/* 列表/首页/圈子页：只读取并显示卡片浏览量，不增加计数（update:false）。
+     真正 +1 发生在详情页的 Waline init(pageview:true)。 */}}
+<script type="module">
+  import { pageviewCount } from 'https://cdn.jsdelivr.net/npm/@waline/client@v3/dist/pageview.js';
+  pageviewCount({
+    serverURL: '{{ .Site.Params.walineServerURL }}',
+    update: false,
+  });
+</script>
