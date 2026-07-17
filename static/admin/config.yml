@@ -12,7 +12,7 @@ site_url: https://chusheng.uk
 # 提交即发布（直接写入 main，触发 GitHub Actions 部署），不走审核工作流。
 
 # 中文标题也能生成可用的文件夹/文件名（保留 unicode，转百分号编码）。
-# 新建条目时 Sveltia 允许你手动改这个 slug（建议画图/圈子用小写英文，如 crimefilm-au）。
+# 新建条目时 Sveltia 允许你手动改这个 slug（建议画图/fandom 用小写英文，如 crimefilm-au）。
 slug:
   encoding: unicode
   clean_accents: true
@@ -22,20 +22,20 @@ media_folder: static/uploads
 public_folder: /uploads
 
 collections:
-  # ---------- 1. 圈子（首页大卡片的数据源）----------
+  # ---------- 1. fandom（首页大卡片的数据源）----------
   - name: fandoms
-    label: 圈子
-    label_singular: 圈子
+    label: fandom
+    label_singular: fandom
     folder: content/fandoms
     path: '{{slug}}/index'
-    media_folder: ''       # 封面图存进该圈子自己的文件夹
+    media_folder: ''       # 封面图存进该 fandom 自己的文件夹
     public_folder: ''
     create: true
     summary: '{{title}}'
     fields:
-      - { label: 圈子名, name: title, widget: string }
+      - { label: fandom 名称, name: title, widget: string }
       - { label: 排序权重, name: weight, widget: number, value_type: int, default: 10, hint: '数字越小越靠前' }
-      - { label: 封面图, name: cover, widget: image, hint: '首页大卡片用图；会存进这个圈子的文件夹' }
+      - { label: 封面图, name: cover, widget: image, hint: '首页大卡片用图；会存进这个 fandom 的文件夹' }
       - { label: 简介, name: body, widget: markdown }
 
   # ---------- 2. 同人文 ----------
@@ -47,8 +47,8 @@ collections:
     fields:
       - { label: 标题, name: title, widget: string }
       - { label: 日期, name: date, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD' }
-      - { label: 章节序号, name: weight, widget: number, value_type: int, required: false, hint: '同一圈子内按它升序翻章；单篇可留空' }
-      - label: 圈子
+      - { label: 章节序号, name: weight, widget: number, value_type: int, required: false, hint: '同一 fandom 内按它升序翻章；单篇可留空' }
+      - label: fandom
         name: fandom
         widget: relation
         collection: fandoms
@@ -57,7 +57,7 @@ collections:
         display_fields: [title]
         multiple: true
         required: false
-        hint: '从「圈子」collection 里选；要加新圈子先去左边「圈子」新建一个'
+        hint: '从「fandom」collection 里选；要加新 fandom 先去左边「fandom」新建一个'
       - label: 标签
         name: tags
         widget: list
@@ -78,7 +78,7 @@ collections:
       - { label: 标题, name: title, widget: string }
       - { label: 日期, name: date, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD' }
       - { label: 封面图, name: cover, widget: image, hint: '卡片缩略图用哪张' }
-      - label: 圈子
+      - label: fandom
         name: fandom
         widget: relation
         collection: fandoms
@@ -87,7 +87,7 @@ collections:
         display_fields: [title]
         multiple: true
         required: false
-        hint: '从「圈子」collection 里选；要加新圈子先去左边「圈子」新建一个'
+        hint: '从「fandom」collection 里选；要加新 fandom 先去左边「fandom」新建一个'
       - label: 标签
         name: tags
         widget: list

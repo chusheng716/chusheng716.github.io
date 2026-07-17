@@ -7,5 +7,5 @@
   </defs>
   <rect width="600" height="600" fill="url(#c2)"/>
   <rect x="190" y="150" width="220" height="220" rx="14" fill="#FFFFFF" opacity="0.45"/>
-  <text x="300" y="320" font-family="sans-serif" font-size="30" fill="#8A7BA8" text-anchor="middle" opacity="0.8">圈子配图占位</text>
+  <text x="300" y="320" font-family="sans-serif" font-size="30" fill="#8A7BA8" text-anchor="middle" opacity="0.8">fandom 配图占位</text>
 </svg>
