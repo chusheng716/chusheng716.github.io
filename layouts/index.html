@@ -7,7 +7,11 @@
       {{ with $term }}{{ $link = .RelPermalink }}{{ end }}
       <a class="circle-card" href="{{ $link }}">
         <div class="circle-card-img">
-          {{ with .image }}<img src="{{ . | relURL }}" alt="{{ $name }}" loading="lazy">{{ end }}
+          {{ with .image }}
+            {{ with resources.Get (strings.TrimPrefix "/" .) }}
+              {{ partial "image.html" (dict "res" . "width" 600 "quality" 80 "alt" $name) }}
+            {{ end }}
+          {{ end }}
         </div>
         <div class="circle-card-body">
           <h2 class="circle-card-title">{{ $name }}</h2>

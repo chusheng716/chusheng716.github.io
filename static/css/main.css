@@ -138,6 +138,7 @@ a:hover { color: var(--accent); }
 .video-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .post-art { margin: 0 0 2rem; text-align: center; }
 .post-art img { max-width: 100%; height: auto; border-radius: 6px; }
+.post-art a.img-zoom { display: inline-block; cursor: zoom-in; }
 .post-art figcaption { color: var(--muted); font-size: 0.9rem; margin-top: 0.75rem; }
 .post-body { font-size: 1rem; line-height: 1.9; }
 .post-body p { margin: 0 0 1.4em; }

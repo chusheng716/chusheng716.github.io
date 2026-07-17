@@ -21,14 +21,14 @@
           {{ $cap := .caption }}
           {{ with $.Resources.GetMatch .src }}
             <figure class="post-art">
-              <img src="{{ .RelPermalink }}" alt="{{ $.Title }}">
+              {{ partial "image.html" (dict "res" . "width" 1200 "quality" 85 "alt" $.Title "picture" true "link" true) }}
               {{ with $cap }}<figcaption>{{ . }}</figcaption>{{ end }}
             </figure>
           {{ end }}
         {{ end }}
       {{ else }}
         {{ range .Resources.ByType "image" }}
-          <figure class="post-art"><img src="{{ .RelPermalink }}" alt="{{ $.Title }}"></figure>
+          <figure class="post-art">{{ partial "image.html" (dict "res" . "width" 1200 "quality" 85 "alt" $.Title "picture" true "link" true) }}</figure>
         {{ end }}
       {{ end }}
     {{ end }}
@@ -87,7 +87,8 @@
       ],
       meta: ['nick'],           // 评论表单只要昵称
       requiredMeta: ['nick'],
-      dark: 'auto',
+      dark: false,       // 始终浅色，不跟随系统深色（保持米色调）
+      lang: 'zh-CN',     // 始终中文，不跟随浏览器语言
       locale: {
         placeholder: '留个言吧~',
         reactionTitle: '如果喜欢的话请给作者点亮小心心吧～',

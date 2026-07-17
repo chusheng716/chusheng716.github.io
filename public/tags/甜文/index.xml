@@ -1,5 +1,24 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>甜文 on 初牲的创作站</title><link>https://chusheng.uk/tags/%E7%94%9C%E6%96%87/</link><description>Recent content in 甜文 on 初牲的创作站</description><generator>Hugo</generator><language>zh_CN</language><lastBuildDate>Fri, 10 Jul 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://chusheng.uk/tags/%E7%94%9C%E6%96%87/index.xml" rel="self" type="application/rss+xml"/><item><title>XXX</title><link>https://chusheng.uk/fiction/summer-rain/</link><pubDate>Fri, 10 Jul 2026 00:00:00 +0000</pubDate><guid>https://chusheng.uk/fiction/summer-rain/</guid><description>&lt;p&gt;XXX&lt;/p&gt;
-&lt;p&gt;XXX&lt;/p&gt;
-&lt;p&gt;XXX&lt;/p&gt;
-&lt;h2 id="xxx"&gt;XXX&lt;/h2&gt;
-&lt;p&gt;XXX&lt;/p&gt;</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>甜文 on 初牲的创作站</title>
+		<link>http://localhost:1313/tags/%E7%94%9C%E6%96%87/</link>
+		<description>Recent content in 甜文 on 初牲的创作站</description>
+		<generator>Hugo</generator>
+		<language>zh_CN</language>
+		
+		
+		
+		
+			<lastBuildDate>Fri, 10 Jul 2026 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="http://localhost:1313/tags/%E7%94%9C%E6%96%87/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>XXX</title>
+				<link>http://localhost:1313/fiction/summer-rain/</link>
+				<pubDate>Fri, 10 Jul 2026 00:00:00 +0000</pubDate>
+				<guid>http://localhost:1313/fiction/summer-rain/</guid>
+				<description>&lt;p&gt;XXX&lt;/p&gt;&#xA;&lt;p&gt;XXX&lt;/p&gt;&#xA;&lt;p&gt;XXX&lt;/p&gt;&#xA;&lt;h2 id=&#34;xxx&#34;&gt;XXX&lt;/h2&gt;&#xA;&lt;p&gt;XXX&lt;/p&gt;</description>
+			</item>
+	</channel>
+</rss>

@@ -1,0 +1,35 @@
+{{- /*
+  Hugo 图片处理封装。参数 dict：
+    res      资源（page bundle 资源或 resources.Get 的全局资源），必填
+    width    目标宽度 px（等比缩放），必填
+    quality  WebP 质量，默认 80
+    alt      alt 文本
+    class    img 的 class
+    lazy     是否 loading=lazy，默认 true
+    picture  true 时输出 <picture>，WebP 为主、原图作 fallback（详情大图用）
+    link     true 时整块包一个链到原图的 <a>（点击查看原图）
+  SVG 等非位图无法处理，直接用原图。
+*/ -}}
+{{- $res := .res -}}
+{{- $w := int .width -}}
+{{- $q := int (.quality | default 80) -}}
+{{- $alt := .alt | default "" -}}
+{{- $class := .class | default "" -}}
+{{- $lazy := .lazy | default true -}}
+{{- $picture := .picture | default false -}}
+{{- $link := .link | default false -}}
+{{- $loading := cond $lazy "lazy" "eager" -}}
+{{- $raster := in (slice "png" "jpg" "jpeg" "gif" "bmp" "tiff") (lower $res.MediaType.SubType) -}}
+{{- $classAttr := cond (ne $class "") (printf " class=%q" $class) "" -}}
+{{- if $link }}<a class="img-zoom" href="{{ $res.RelPermalink }}" target="_blank" rel="noopener">{{ end -}}
+{{- if $raster -}}
+  {{- $opt := $res.Resize (printf "%dx webp q%d" $w $q) -}}
+  {{- if $picture -}}
+    <picture><source srcset="{{ $opt.RelPermalink }}" type="image/webp"><img src="{{ $res.RelPermalink }}"{{ $classAttr | safeHTMLAttr }} alt="{{ $alt }}" loading="{{ $loading }}" decoding="async" width="{{ $res.Width }}" height="{{ $res.Height }}"></picture>
+  {{- else -}}
+    <img src="{{ $opt.RelPermalink }}"{{ $classAttr | safeHTMLAttr }} alt="{{ $alt }}" loading="{{ $loading }}" decoding="async" width="{{ $opt.Width }}" height="{{ $opt.Height }}">
+  {{- end -}}
+{{- else -}}
+  <img src="{{ $res.RelPermalink }}"{{ $classAttr | safeHTMLAttr }} alt="{{ $alt }}" loading="{{ $loading }}" decoding="async">
+{{- end -}}
+{{- if $link }}</a>{{ end -}}

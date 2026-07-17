@@ -102,11 +102,25 @@ images:                       # 详情页按此顺序纵向展示，每张下面
 
 ## 图片规范
 
-- **放哪**：所有图片放 `static/img/`。`static/` 下的路径直接对应网站根路径——`static/img/x.jpg` → 配置/front matter 里写 `/img/x.jpg`。
-- **格式**：`.png / .jpg / .jpeg / .svg / .webp` 都行，模板不对格式做任何假设，`<img>` 直接引用你写的路径。占位用的 `.svg` 只是示例，换成实际图直接改路径即可。
+- **放哪**：
+  - **圈子卡片图**（全站公用）放 `assets/img/`，配置里写 `image = "/img/x.jpg"`（`/img/` 对应 `assets/img/`）。
+  - **画图作品的图**放进该作品自己的 Page Bundle 文件夹（`content/art/作品名/`），front matter 只写文件名。
+  - 放进 `assets/` 或 Page Bundle 的图才能被 Hugo 处理（压缩/转 WebP）；`static/` 下的图只会原样拷贝、不处理。
+- **格式**：`.png / .jpg / .jpeg / .webp` 会被处理；`.svg` 是矢量图，模板会原样使用（不转 WebP）。
 - **文件名一律小写**，用连字符不用空格：`circle-qixiaoxia.png` ✅、`Circle_QiXiaoXia.PNG` ❌。
-  > ⚠️ **大小写敏感**：GitHub Actions 跑在 Linux 上，文件系统区分大小写。本地 macOS 不区分，所以 `image = "/img/Foo.PNG"` 在你电脑上能显示、推上去却 404。统一小写可彻底避免这类「本地好好的、线上裂图」。
+  > ⚠️ **大小写敏感**：GitHub Actions 跑在 Linux 上，文件系统区分大小写。本地 macOS 不区分，所以 `Foo.PNG` 在你电脑上能显示、推上去却 404。统一小写可彻底避免这类「本地好好的、线上裂图」。
 - 大卡片和缩略图都用 `object-fit: cover`，不同尺寸的图会自动裁切填满，不会撑破布局。
+
+### 图片自动优化（构建时）
+
+原图原封不动留在仓库里，Hugo 在 **构建时** 生成优化版本（缓存在 `resources/_gen/`，已被 `.gitignore` 忽略）。逻辑在 `layouts/partials/image.html`：
+
+| 位置 | 处理 |
+|---|---|
+| 卡片缩略图（画图/圈子） | 宽 600px，转 WebP，质量 80 |
+| 详情页展示图 | 最大宽 1200px，WebP 质量 85；`<picture>` 里以原图作 fallback；点击看原图 |
+
+图片都带 `loading="lazy"`，多图不会一次性全部加载。SVG 因是矢量图不做这些处理、直接用原图。
 
 ## 嵌入视频（B 站 / YouTube）
 
@@ -133,10 +147,11 @@ layouts/                  自建主题模板
   _default/term.html        圈子/标签聚合页
   _default/single.html      详情页 + 圈子/标签链接 + 方向键翻页 + Waline 评论/浏览量/点赞
   partials/card.html        小卡片（含圈子 + tags + 浏览量）
+  partials/image.html       图片处理封装（缩放/WebP/lazy/点击看原图）
   partials/pageview.html    列表页拉取卡片浏览量（只读不计数）
   shortcodes/video.html     B 站 / YouTube 视频嵌入
 static/css/main.css       全部样式（含 Waline 变量覆盖）
-static/img/               全站公用图（圈子卡片图等；文件名一律小写）
+assets/img/               圈子卡片图（构建时压缩转 WebP；文件名一律小写）
 static/robots.txt         屏蔽所有搜索引擎爬虫
 content/fiction/          同人文（每篇一个 .md）
   summer-rain.md
@@ -154,7 +169,7 @@ scripts/docx_to_md.py     docx → markdown 转换脚本
 drafts/                   原始素材（docx），已在 .gitignore，不发布
 ```
 
-> **两种图片位置别搞混**：全站公用的图（圈子卡片图）放 `static/img/`，用 `/img/xxx` 引用；单个画图作品的图放进**该作品自己的文件夹**（Page Bundle），front matter 里只写文件名（`01.jpg`），不带路径。
+> **两种图片位置别搞混**：全站公用的图（圈子卡片图）放 `assets/img/`，用 `/img/xxx` 引用；单个画图作品的图放进**该作品自己的文件夹**（Page Bundle），front matter 里只写文件名（`01.jpg`），不带路径。两处都会被构建时优化。
 
 ## 发布
 

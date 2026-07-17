@@ -6,7 +6,7 @@
     {{ with .Params.cover }}{{ $cover = $.Resources.GetMatch . }}{{ end }}
     {{ if not $cover }}{{ with .Resources.ByType "image" }}{{ $cover = index . 0 }}{{ end }}{{ end }}
     {{ with $cover }}
-      <div class="card-thumb"><img src="{{ .RelPermalink }}" alt="{{ $.Title }}" loading="lazy"></div>
+      <div class="card-thumb">{{ partial "image.html" (dict "res" . "width" 600 "quality" 80 "alt" $.Title) }}</div>
     {{ end }}
   {{ end }}
   <div class="card-body">
