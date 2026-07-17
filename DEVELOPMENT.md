@@ -89,23 +89,19 @@ images:                       # 详情页按此顺序纵向展示，每张下面
   圈子聚合页在 `/fandom/<圈子名>/`，混排该圈子下的文和图。
 - **tags（自由标签）** — 只在详情页和列表小卡片显示，不进首页。可点击跳到 `/tags/<标签>/` 聚合页。
 
-**新增一个圈子**：在 `hugo.toml` 里加一段（首页大卡片就是从这里读的，不写在模板里）：
+**圈子由 `content/fandoms/` 这个 collection 驱动**（首页大卡片从这里动态生成，不再写在 `hugo.toml`）。最省事的方式是用网页后台（见下方「网页后台」），也可以手动建文件夹：
 
-```toml
-[[params.fandoms]]
-  name = "圈子名"              # 要和文章 front matter 里的 fandom 值完全一致
-  image = "/img/圈子图.jpg"    # 大卡片配图，见下方「图片规范」
-  intro = "圈子简介文字"
+```
+content/fandoms/qixiaoxia/
+  index.md      # title=圈子名, weight=排序, cover=封面文件名, 正文=简介
+  cover.png     # 封面图，和 index.md 同目录
 ```
 
-`name` 就是聚合页地址：`name = "七小侠"` → 卡片链到 `/fandom/七小侠/`。删掉某圈子的所有文章后，它的聚合页和首页卡片会自动消失。
+`index.md` 里的 `title` 要和文章 front matter 的 `fandom` 值完全一致（如「七小侠」），首页卡片会链到聚合页 `/fandom/七小侠/`。`weight` 小的排前面。这些页面本身不生成独立网址（`render: never`），只作数据源。
 
 ## 图片规范
 
-- **放哪**：
-  - **圈子卡片图**（全站公用）放 `assets/img/`，配置里写 `image = "/img/x.jpg"`（`/img/` 对应 `assets/img/`）。
-  - **画图作品的图**放进该作品自己的 Page Bundle 文件夹（`content/art/作品名/`），front matter 只写文件名。
-  - 放进 `assets/` 或 Page Bundle 的图才能被 Hugo 处理（压缩/转 WebP）；`static/` 下的图只会原样拷贝、不处理。
+- **放哪**：圈子封面和画图作品的图都放进**各自的 Page Bundle 文件夹**（圈子在 `content/fandoms/<圈子>/`，画图在 `content/art/<作品>/`），front matter 只写文件名。Page Bundle 里的图会被 Hugo 处理（压缩/转 WebP）；`static/` 下的图只原样拷贝、不处理。
 - **格式**：`.png / .jpg / .jpeg / .webp` 会被处理；`.svg` 是矢量图，模板会原样使用（不转 WebP）。
 - **文件名一律小写**，用连字符不用空格：`circle-qixiaoxia.png` ✅、`Circle_QiXiaoXia.PNG` ❌。
   > ⚠️ **大小写敏感**：GitHub Actions 跑在 Linux 上，文件系统区分大小写。本地 macOS 不区分，所以 `Foo.PNG` 在你电脑上能显示、推上去却 404。统一小写可彻底避免这类「本地好好的、线上裂图」。
@@ -151,25 +147,27 @@ layouts/                  自建主题模板
   partials/pageview.html    列表页拉取卡片浏览量（只读不计数）
   shortcodes/video.html     B 站 / YouTube 视频嵌入
 static/css/main.css       全部样式（含 Waline 变量覆盖）
-assets/img/               圈子卡片图（构建时压缩转 WebP；文件名一律小写）
+static/admin/             网页后台（Sveltia CMS）
+  index.html                后台入口
+  config.yml                collections / 字段配置
 static/robots.txt         屏蔽所有搜索引擎爬虫
+content/fandoms/          圈子（首页大卡片数据源，每个圈子一个 Page Bundle）
+  qixiaoxia/
+    index.md                title=七小侠, weight, cover
+    cover.png
 content/fiction/          同人文（每篇一个 .md）
   summer-rain.md
   yeshanshen-1-00.md …
 content/art/              同人图（每个作品一个文件夹 = Page Bundle）
-  dusk/                     单图作品
-    index.md
-    dusk.svg
-  sketchset/                组图作品
-    index.md
-    01.svg
-    02.svg
-    03.svg
+  crimefilm_au/
+    index.md                title/cover/images…
+    01.jpg
+    02.jpg
 scripts/docx_to_md.py     docx → markdown 转换脚本
 drafts/                   原始素材（docx），已在 .gitignore，不发布
 ```
 
-> **两种图片位置别搞混**：全站公用的图（圈子卡片图）放 `assets/img/`，用 `/img/xxx` 引用；单个画图作品的图放进**该作品自己的文件夹**（Page Bundle），front matter 里只写文件名（`01.jpg`），不带路径。两处都会被构建时优化。
+> **图片都放 Page Bundle**：圈子封面放 `content/fandoms/<圈子>/`，画图作品的图放 `content/art/<作品>/`，front matter 里只写文件名（`cover.png`、`01.jpg`），不带路径。都会被构建时优化。
 
 ## 发布
 
@@ -180,6 +178,23 @@ drafts/                   原始素材（docx），已在 .gitignore，不发布
 自定义域名 `chusheng.uk` 由根目录 `CNAME` 文件生效（勿删）。
 
 > **搜索引擎**：`static/robots.txt` 设为 `Disallow: /`，屏蔽所有爬虫（同人站不希望被搜到）。想被收录就删掉这个文件或放开规则。
+
+## 网页后台（Sveltia CMS）
+
+不想碰 git 时，用网页后台发布：打开 **`https://chusheng.uk/admin/`**，用 GitHub 账号登录（授权由 Cloudflare Worker `sveltia-cms-auth` 处理），改完点保存即写回仓库 `main`、自动触发部署。
+
+配置在 `static/admin/config.yml`，三个 collection：**圈子 / 同人文 / 同人图**，字段都是中文。要点：
+
+- **自己加圈子**：进「圈子」→ 新建，填圈子名、排序、封面、简介 —— 首页自动多一张大卡片，无需碰配置。
+- **自己加标签**：文/图的「标签」栏直接输入新 tag，随便加，无需碰配置。
+- **圈子字段用 relation**：文/图里选圈子是从「圈子」collection 动态拉的下拉（能搜索/自动补全）。**注意**：Sveltia 的 relation 只能选已有的、不能在这里临时新建圈子——要用新圈子，先去「圈子」里建好，再回来选。
+- **新建画图/圈子时**能改左上角的 slug（文件夹名），建议用小写英文（如 `crimefilm-au`），避免中文文件夹在 Linux 上的大小写/编码麻烦。
+
+> ⚠️ **关于标签自动补全**：你要的「自由输入 + 已有 tag 自动补全」两者兼得，Sveltia 目前做不到——`list` 组件能自由新增但不提示已有值，`relation` 能提示已有值但不能新建。这里给标签选了 `list`（保证「能随便加新 tag」这个硬需求）。如果你更想要「从已有 tag 里挑（自动补全）」、接受「加新 tag 要先建一次」，我可以把 tag 也改成一个 collection + relation，跟圈子一样——说一声即可。
+
+> **界面语言**：Sveltia 后台语言主要**跟随浏览器语言**，中文系统/浏览器下即中文。`config.yml` 里的 `locale: zh-CN` 是尽力声明；若仍显示英文，把浏览器语言设为中文最稳。
+
+> **前提**：Cloudflare Worker `sveltia-cms-auth.chusheng716.workers.dev` 要已部署并配好 GitHub OAuth App（授权回调指向它）。这步是一次性的，若还没弄，后台会卡在登录——需要另外配置。
 
 ## 评论 / 浏览量 / 点赞（Waline）
 

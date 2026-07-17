@@ -15,20 +15,8 @@ summaryLength = 40
   description = "个人同人创作：文字与插画"
   walineServerURL = "https://waline-lime-nine.vercel.app"  # Waline 评论/浏览量后端；换后端只改这里
 
-# ---- 圈子大卡片配置 ----
-# 首页每个 [[params.fandoms]] = 一张大卡片，对应一个 fandom（圈子）taxonomy。
-# name  ：必须和文章 front matter 里 fandom 字段的值完全一致，卡片链到 /fandom/<name>/。
-# image ：把图放进 static/img/（文件名一律小写），这里填 "/img/文件名.png|jpg|svg"。
-# intro ：圈子简介。
-[[params.fandoms]]
-  name = "七小侠"
-  image = "/img/circle-qixiaoxia.png"
-  intro = "XXX"
-
-[[params.fandoms]]
-  name = "圈子二"
-  image = "/img/circle-two.svg"
-  intro = "XXX"
+# 首页大卡片现在由 content/fandoms/ 这个 collection 动态生成（不再写在这里，
+# 方便在 Sveltia CMS 后台增删圈子）。
 
 # ---- 分类 taxonomy ----
 [taxonomies]

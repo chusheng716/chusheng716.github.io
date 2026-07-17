@@ -1,21 +1,19 @@
 {{ define "main" }}
   <div class="circle-grid">
-    {{ range .Site.Params.fandoms }}
-      {{ $name := .name }}
+    {{ range (where site.RegularPages "Section" "fandoms").ByWeight }}
+      {{ $name := .Title }}
       {{ $term := site.GetPage (printf "/fandom/%s" $name) }}
       {{ $link := printf "/fandom/%s/" ($name | urlize) | relURL }}
       {{ with $term }}{{ $link = .RelPermalink }}{{ end }}
       <a class="circle-card" href="{{ $link }}">
         <div class="circle-card-img">
-          {{ with .image }}
-            {{ with resources.Get (strings.TrimPrefix "/" .) }}
-              {{ partial "image.html" (dict "res" . "width" 600 "quality" 80 "alt" $name) }}
-            {{ end }}
+          {{ with .Resources.GetMatch .Params.cover }}
+            {{ partial "image.html" (dict "res" . "width" 600 "quality" 80 "alt" $name) }}
           {{ end }}
         </div>
         <div class="circle-card-body">
           <h2 class="circle-card-title">{{ $name }}</h2>
-          <p class="circle-card-intro">{{ .intro }}</p>
+          <div class="circle-card-intro">{{ .Content }}</div>
         </div>
       </a>
     {{ end }}

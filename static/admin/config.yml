@@ -1,0 +1,104 @@
+backend:
+  name: github
+  repo: chusheng716/chusheng716.github.io
+  branch: main
+  base_url: https://sveltia-cms-auth.chusheng716.workers.dev
+
+# CMS 界面语言。Sveltia 主要跟随浏览器语言；此项为兼容 Decap 的显式声明。
+locale: zh-CN
+
+site_url: https://chusheng.uk
+
+# 提交即发布（直接写入 main，触发 GitHub Actions 部署），不走审核工作流。
+
+# 中文标题也能生成可用的文件夹/文件名（保留 unicode，转百分号编码）。
+# 新建条目时 Sveltia 允许你手动改这个 slug（建议画图/圈子用小写英文，如 crimefilm-au）。
+slug:
+  encoding: unicode
+  clean_accents: true
+
+# 全局媒体兜底目录（下面各 collection 大多用各自的 Page Bundle 目录覆盖它）。
+media_folder: static/uploads
+public_folder: /uploads
+
+collections:
+  # ---------- 1. 圈子（首页大卡片的数据源）----------
+  - name: fandoms
+    label: 圈子
+    label_singular: 圈子
+    folder: content/fandoms
+    path: '{{slug}}/index'
+    media_folder: ''       # 封面图存进该圈子自己的文件夹
+    public_folder: ''
+    create: true
+    summary: '{{title}}'
+    fields:
+      - { label: 圈子名, name: title, widget: string }
+      - { label: 排序权重, name: weight, widget: number, value_type: int, default: 10, hint: '数字越小越靠前' }
+      - { label: 封面图, name: cover, widget: image, hint: '首页大卡片用图；会存进这个圈子的文件夹' }
+      - { label: 简介, name: body, widget: markdown }
+
+  # ---------- 2. 同人文 ----------
+  - name: fiction
+    label: 同人文
+    label_singular: 同人文
+    folder: content/fiction
+    create: true
+    fields:
+      - { label: 标题, name: title, widget: string }
+      - { label: 日期, name: date, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD' }
+      - { label: 章节序号, name: weight, widget: number, value_type: int, required: false, hint: '同一圈子内按它升序翻章；单篇可留空' }
+      - label: 圈子
+        name: fandom
+        widget: relation
+        collection: fandoms
+        value_field: title
+        search_fields: [title]
+        display_fields: [title]
+        multiple: true
+        required: false
+        hint: '从「圈子」collection 里选；要加新圈子先去左边「圈子」新建一个'
+      - label: 标签
+        name: tags
+        widget: list
+        required: false
+        hint: '每行/每项一个，可随意新增（如 甜文、AU、HE、R18）'
+      - { label: 正文, name: body, widget: markdown }
+
+  # ---------- 3. 同人图（Page Bundle，可多图）----------
+  - name: art
+    label: 同人图
+    label_singular: 同人图
+    folder: content/art
+    path: '{{slug}}/index'
+    media_folder: ''       # 所有图存进该作品自己的文件夹
+    public_folder: ''
+    create: true
+    fields:
+      - { label: 标题, name: title, widget: string }
+      - { label: 日期, name: date, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD' }
+      - { label: 封面图, name: cover, widget: image, hint: '卡片缩略图用哪张' }
+      - label: 圈子
+        name: fandom
+        widget: relation
+        collection: fandoms
+        value_field: title
+        search_fields: [title]
+        display_fields: [title]
+        multiple: true
+        required: false
+        hint: '从「圈子」collection 里选；要加新圈子先去左边「圈子」新建一个'
+      - label: 标签
+        name: tags
+        widget: list
+        required: false
+        hint: '每项一个，可随意新增'
+      - label: 图片（可多张，纵向展示）
+        name: images
+        widget: list
+        label_singular: 图片
+        required: false
+        fields:
+          - { label: 图片, name: src, widget: image }
+          - { label: 说明文字, name: caption, widget: string, required: false }
+      - { label: 创作笔记, name: body, widget: markdown, required: false }
